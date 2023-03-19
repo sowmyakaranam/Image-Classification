@@ -1,0 +1,46 @@
+import tensorflow as tf
+tf.__version__
+RANDOM_SEED = 42
+!pip install split-folders[full]
+import splitfolders
+splitfolders.ratio("/kaggle/input/wonders-of-the-world-image-classification/Wonders of World/Wonders of World", output="dataset_splitted",
+    seed=RANDOM_SEED, ratio=(.8, .2,), group_prefix=None, move=False)
+!rm -rf "/kaggle/working/dataset_splitted/val/Wonders of World"
+!rm -rf "/kaggle/working/dataset_splitted/train/Wonders of World"
+import os
+def walk_through_dir(dir_path):
+    for dirpath, dirnames, filenames in os.walk(dir_path):
+        print(
+            f"There are {len(dirnames)} directories and {len(filenames)} images in '{dirpath}'.")
+walk_through_dir("/kaggle/working/dataset_splitted")
+import os
+def walk_through_dir(dir_path):
+    for dirpath, dirnames, filenames in os.walk(dir_path):
+        print(
+            f"There are {len(dirnames)} directories and {len(filenames)} images in '{dirpath}'.")
+walk_through_dir("/kaggle/working/dataset_splitted")
+BATCH_SIZE = 32
+EPOCHS = 5
+IMAGE_SIZE= (400, 400)
+LABEL_MODE = "categorical"
+AUGMENTATION_FACTOR= 0.2
+TRAIN_DIR = "dataset_splitted/train"
+TEST_DIR = "dataset_splitted/val"
+import random
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+def show_random_image_from_dataset(target_dir, class_names):
+    if not target_dir:
+        print("Please path a directory!")
+        return
+    if not os.path.isdir(target_dir):
+        print("This directory path does not exist!")
+        return
+    target_class = random.choice(class_names)
+    target_folder: str = target_dir + target_class
+    random_image = random.sample(os.listdir(target_folder), 1)
+    img = mpimg.imread(target_folder + "/" + random_image[0])
+    plt.imshow(img)
+    plt.title(target_class)
+    print(f"Image shape: {img.shape}") # show the shape of the image
+show_random_image_from_dataset(target_dir=f"{TRAIN_DIR}/", class_names=class_names)
